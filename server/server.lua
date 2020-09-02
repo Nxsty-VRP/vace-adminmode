@@ -4,7 +4,7 @@ AdminList = {}
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-TriggerEvent('es:addGroupCommand', 'adminmode', 'admin', function(source, args, user)
+ESX.RegisterCommand('adminmode', 'admin', function(source, args, user)
 	local found = nil
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local name = GetPlayerName(source)
