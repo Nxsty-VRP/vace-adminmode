@@ -7,7 +7,6 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 ESX.RegisterCommand('adminmode', 'admin', function(source, args, user)
 	local found = nil
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local name = GetPlayerName(source)
 		for i, v in ipairs(AdminList) do
             if v.id == source then
 				found = i
@@ -18,14 +17,14 @@ ESX.RegisterCommand('adminmode', 'admin', function(source, args, user)
         if found == nil then
             TriggerClientEvent('esx:showNotification', source, 'Du hast den ~b~Adminmode ~g~aktiviert')
 			TriggerEvent('vace-adminmode:updatelist', 'Teammitglied - nicht beachten', false, source)
-			sendToDiscord('Supportrechte aktiviert','Das Teammitglied ' .. name .. ' hat den Adminmode aktiviert.', 56108)
+			sendToDiscord('Supportrechte aktiviert','Das Teammitglied ' .. GetPlayerName(source) .. ' hat den Adminmode aktiviert.', 56108)
             TriggerClientEvent('vace-adminmode:setGodmode', source, true)
             TriggerClientEvent('vace-adminmode:setOutfit', source)
         else
             TriggerClientEvent('esx:showNotification', source, 'Du hast den ~b~Adminmode ~r~deaktiviert')
             TriggerEvent('vace-adminmode:updatelist', 'Teammitglied - nicht beachten', true, source)
 			TriggerClientEvent('vace-adminmode:setGodmode', source, false)
-			sendToDiscord('Supportrechte deaktiviert','Das Teammitglied ' .. name ..  ' hat den Adminmode deaktiviert.',56108)
+			sendToDiscord('Supportrechte deaktiviert','Das Teammitglied ' .. GetPlayerName(source) ..  ' hat den Adminmode deaktiviert.',56108)
 			TriggerClientEvent('vace-adminmode:zivil', source)
 		end
 end, function(source, args, user)
@@ -48,7 +47,7 @@ function sendToDiscord (name,message,color)
   }
   
 	if message == nil or message == '' then return FALSE end
-	PerformHttpRequest(DiscordWebHook, function(err, text, headers) end, 'POST', json.encode({ username = name,embeds = embeds}), { ['Content-Type'] = 'application/json' })
+	PerformHttpRequest(DiscordWebHook, function(err, text, headers) end, 'POST', json.encode({ username = GetPlayerName(source),embeds = embeds}), { ['Content-Type'] = 'application/json' })
 end
 
 ESX.RegisterServerCallback('vace-adminmode:isAdmin', function(source, cb)
@@ -91,7 +90,7 @@ AddEventHandler('vace-adminmode:updatelist', function(name2, removebool, id)
 		if found ~= nil then
 			table.remove(AdminList, found)
 		end
-		table.insert(AdminList, {name=name2, id=id})
+		table.insert(AdminList, {GetPlayerName(source)=name2, id=id})
 	end
 	
     TriggerClientEvent('vace-adminmode:clupdatelist', -1, AdminList)
